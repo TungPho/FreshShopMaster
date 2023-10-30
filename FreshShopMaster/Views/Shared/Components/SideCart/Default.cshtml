@@ -1,0 +1,24 @@
+﻿
+@model Cart
+<li class="cart-box">
+    <ul class="cart-list">
+        @if(Model?.lines != null)
+        {
+            @foreach (var item in Model.lines)
+            {
+                <li>
+                    <a href="#" class="photo"><img src="@item.Product.ProductPhoto" class="cart-thumb" alt="" /></a>
+                    <h6><a href="#">@item.Product.ProductName</a></h6>
+                    <p><span class="price">@item.Product.ProductPrice</span></p>
+                </li>
+            }
+
+        }
+        else
+        {
+            <p>Cart is empty!</p>
+        }
+        <a style="margin-top:100px" href="/Orders/PersonalOrders" class="btn hrv-hover">My Orders</a>
+
+    </ul>
+</li>

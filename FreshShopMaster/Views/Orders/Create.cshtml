@@ -1,0 +1,201 @@
+﻿@model FreshShopMaster.Models.Order
+<!-- Start Cart  -->
+<div class="cart-box-main">
+	<div class="container">
+		<div class="row new-account-login">
+			<div class="col-sm-6 col-lg-6 mb-3">
+				<div class="title-left">
+					<h3>Account Login</h3>
+				</div>
+				<h5><a data-toggle="collapse" href="#formLogin" role="button" aria-expanded="false">Click here to Login</a></h5>
+				<form class="mt-3 collapse review-form-box" id="formLogin">
+					<div class="form-row">
+						<div class="form-group col-md-6">
+							<label for="InputEmail" class="mb-0">Email Address</label>
+							<input type="email" class="form-control" id="InputEmail" placeholder="Enter Email">
+						</div>
+						<div class="form-group col-md-6">
+							<label for="InputPassword" class="mb-0">Password</label>
+							<input type="password" class="form-control" id="InputPassword" placeholder="Password">
+						</div>
+					</div>
+					<button type="submit" class="btn hvr-hover">Login</button>
+				</form>
+			</div>
+			<div class="col-sm-6 col-lg-6 mb-3">
+				<div class="title-left">
+					<h3>Create New Account</h3>
+				</div>
+				<h5><a data-toggle="collapse" href="#formRegister" role="button" aria-expanded="false">Click here to Register</a></h5>
+				<form class="mt-3 collapse review-form-box" id="formRegister">
+					<div class="form-row">
+						<div class="form-group col-md-6">
+							<label for="InputName" class="mb-0">First Name</label>
+							<input type="text" class="form-control" id="InputName" placeholder="First Name">
+						</div>
+						<div class="form-group col-md-6">
+							<label for="InputLastname" class="mb-0">Last Name</label>
+							<input type="text" class="form-control" id="InputLastname" placeholder="Last Name">
+						</div>
+						<div class="form-group col-md-6">
+							<label for="InputEmail1" class="mb-0">Email Address</label>
+							<input type="email" class="form-control" id="InputEmail1" placeholder="Enter Email">
+						</div>
+						<div class="form-group col-md-6">
+							<label for="InputPassword1" class="mb-0">Password</label>
+							<input type="password" class="form-control" id="InputPassword1" placeholder="Password">
+						</div>
+					</div>
+					<button type="submit" class="btn hvr-hover">Register</button>
+				</form>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-6 col-lg-6 mb-3">
+				<div class="checkout-address">
+					<div class="title-left">
+						<h3>Billing address</h3>
+					</div>
+					<form asp-action="Create" class="needs-validation" novalidate>
+						<div class="row">
+							<div class="col-md-6 mb-3">
+								<label asp-for="FirstName" class="control-label">First name *</label>
+								<input asp-for="FirstName" class="form-control" />
+								<span asp-validation-for="FirstName" class="invalid-feedback">Valid first name is required.</span>
+							</div>
+							<div class="col-md-6 mb-3">
+								<label asp-for="LastName" class="control-label"></label>
+								<input asp-for="LastName" class="form-control" />
+								<span asp-validation-for="LastName" class="invalid-feedback"></span>
+							</div>
+						</div>
+
+						<div class="mb-3">
+							<label asp-for="Email" class="control-label"></label>
+							<input asp-for="Email" class="form-control" placeholder="" />
+							<span asp-validation-for="Email" class="invalid-feedback">Please enter a valid email address for shipping updates.</span>
+						</div>
+						<div class="mb-3">
+							<label asp-for="Address" class="control-label">Address *</label>
+							<input asp-for="Address" class="form-control" type="text" />
+							<span asp-validation-for="Address" class="invalid-feedback">Please enter your shipping address.</span>
+						</div>
+						<div class="row">
+							<div class="col-md-5 mb-3">
+								<label asp-for="Country" class="control-label">Country *</label>
+								<select asp-for="Country" asp-items="@ViewBag.countries" class="form-select"><</select>
+								<span asp-validation-for="Country" class="text-danger"></span>
+								<div class="invalid-feedback"> Please select a valid country. </div>
+							</div>
+
+							<div class="col-md-4 mb-3">
+								<label asp-for="State" class="control-label">State *</label>
+								<select asp-for="State" asp-items="@ViewBag.states" class="form-select"></select>
+								<span asp-validation-for="State" class="invalid-feedback">Please provide a valid state.</span>
+							</div>
+
+						</div>
+						<hr class="mb-4">
+						<div class="custom-control custom-checkbox">
+							<input type="checkbox" class="custom-control-input" id="same-address">
+							<label class="custom-control-label" for="same-address">Shipping address is the same as my billing address</label>
+						</div>
+						<div class="custom-control custom-checkbox">
+							<input type="checkbox" class="custom-control-input" id="save-info">
+							<label class="custom-control-label" for="save-info">Save this information for next time</label>
+						</div>
+						<hr class="mb-4">
+						<div class="title"> <span>Payment</span> </div>
+						<div class="d-block my-3">
+							<div class="custom-control custom-radio">
+								<input id="credit" name="paymentMethod" type="radio" class="custom-control-input" checked required>
+								<label class="custom-control-label" for="credit">Credit card</label>
+							</div>
+							<div class="custom-control custom-radio">
+								<input id="debit" name="paymentMethod" type="radio" class="custom-control-input" required>
+								<label class="custom-control-label" for="debit">Debit card</label>
+							</div>
+							<div class="custom-control custom-radio">
+								<input id="paypal" name="paymentMethod" type="radio" class="custom-control-input" required>
+								<label class="custom-control-label" for="paypal">Paypal</label>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6 mb-3">
+								<label for="cc-name">Name on card</label>
+								<input type="text" class="form-control" id="cc-name" placeholder="" required> <small class="text-muted">Full name as displayed on card</small>
+								<div class="invalid-feedback"> Name on card is required </div>
+							</div>
+							<div class="col-md-6 mb-3">
+								<label for="cc-number">Credit card number</label>
+								<input type="text" class="form-control" id="cc-number" placeholder="" required>
+								<div class="invalid-feedback"> Credit card number is required </div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-3 mb-3">
+								<label for="cc-expiration">Expiration</label>
+								<input type="text" class="form-control" id="cc-expiration" placeholder="" required>
+								<div class="invalid-feedback"> Expiration date required </div>
+							</div>
+							<div class="col-md-3 mb-3">
+								<label for="cc-expiration">CVV</label>
+								<input type="text" class="form-control" id="cc-cvv" placeholder="" required>
+								<div class="invalid-feedback"> Security code required </div>
+							</div>
+							<div class="col-md-6 mb-3">
+								<div class="payment-icon">
+									<ul>
+										<li><img class="img-fluid" src="/images/payment-icon/1.png" alt=""></li>
+										<li><img class="img-fluid" src="/images/payment-icon/2.png" alt=""></li>
+										<li><img class="img-fluid" src="/images/payment-icon/3.png" alt=""></li>
+										<li><img class="img-fluid" src="/images/payment-icon/5.png" alt=""></li>
+										<li><img class="img-fluid" src="/images/payment-icon/7.png" alt=""></li>
+									</ul>
+								</div>
+							</div>
+						</div>
+
+						<div class="col-12 d-flex shopping-box">
+							<input type="submit" value="Place Order" class="ml-auto btn hvr-hover" />
+						</div>
+						<div>
+							<a asp-action="Index">Back to List</a>
+						</div>
+					</form>
+				</div>
+			</div>
+			<div class="col-sm-6 col-lg-6 mb-3">
+				<div class="row">
+					<div class="col-md-12 col-lg-12">
+						<div class="shipping-method-box">
+							<div class="title-left">
+								<h3>Shipping Method</h3>
+							</div>
+							<div class="mb-4">
+								<div class="custom-control custom-radio">
+									<input id="shippingOption1" name="shipping-option" class="custom-control-input" checked="checked" type="radio">
+									<label class="custom-control-label" for="shippingOption1">Standard Delivery</label> <span class="float-right font-weight-bold">FREE</span>
+								</div>
+								<div class="ml-4 mb-2 small">(3-7 business days)</div>
+								<div class="custom-control custom-radio">
+									<input id="shippingOption2" name="shipping-option" class="custom-control-input" type="radio">
+									<label class="custom-control-label" for="shippingOption2">Express Delivery</label> <span class="float-right font-weight-bold">$10.00</span>
+								</div>
+								<div class="ml-4 mb-2 small">(2-4 business days)</div>
+								<div class="custom-control custom-radio">
+									<input id="shippingOption3" name="shipping-option" class="custom-control-input" type="radio">
+									<label class="custom-control-label" for="shippingOption3">Next Business day</label> <span class="float-right font-weight-bold">$20.00</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					@await Component.InvokeAsync("DisplayCheckout")
+
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>
+<!-- End Cart -->

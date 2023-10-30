@@ -1,0 +1,16 @@
+﻿@model IEnumerable<Category>
+<div class="categories-shop">
+    <div class="container">
+        <div class="row">
+            @foreach(var item in Model)
+            {
+                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                    <div class="shop-cat-box">
+                        <img class="img-fluid" src="@item.CategoryPhoto" alt="" />
+                        <a class="btn hvr-hover" href="/Products/ProductByCat/?categoryId=@item.CategoryId">@item.CategoryName</a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

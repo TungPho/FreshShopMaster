@@ -178,6 +178,7 @@
 		let displayData = function (data) {
 			document.querySelector("#sorted_products").innerHTML = data;
 		}
+		let link2 = "/Products/_PagingPartial/";
 
 		let changeListener = async function () {
 			let value = this.value;
@@ -188,10 +189,12 @@
 			} else if (value == "2") {
 				console.log("High Price → Low Price");
 				data = await asyncFnSort("/Products/SortByHighPrice");
+				link2 = "/Products/SortByHighPrice/"
 				displayData(data);
 			} else if (value == "3") {
 				console.log("Low Price → High Price");
 				data = await asyncFnSort("/Products/SortByLowPrice");
+				ink2 = "/Products/SortByLowPrice"
 				displayData(data);
 			} else if (value == "4") {
 				console.log("Best Selling");
@@ -229,6 +232,8 @@
 				body: JSON.stringify(data)
 			})
 			console.log(res);
+			link2 = "/Products/GetFilteredProducts";
+			console.log(link2);
 			let res2 = await res.text();
 			console.log(res2);
 			displayData(res2);
@@ -236,17 +241,15 @@
 		})
 
 		let pagingAsync = async function (page) {
-			const res = await fetch(`https://localhost:7220/Products/Index/?page=${page}`);
+			const res = await fetch(`https://localhost:7220${link2}?page=${page}`);
 			const data = await res.text();
 			console.log(data);
 			displayData(data);
 		}
-
+		console.log(link2);
 		let links = document.querySelectorAll('.paing_linked');
 		links.forEach((link,index) => {
-			if (Number(link.textContent) == 1) {
-				link.setAttribute("href", "/Products/Index");
-			}
+			
 			link.addEventListener('click', () => {
 				pagingAsync(Number(link.textContent));
 			}

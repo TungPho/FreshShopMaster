@@ -33,7 +33,7 @@ namespace FreshShopMaster.Controllers
 			public int Max { get; set; }
 
 		}
-		public IActionResult GetFilteredProducts([FromBody] FilterData filter)
+		public IActionResult GetFilteredProducts([FromBody] FilterData filter, int? page = 1)
 		{
 			var filteredProducts = _context.Products.ToList();
 
@@ -51,38 +51,48 @@ namespace FreshShopMaster.Controllers
 				filteredProducts = filteredProducts.Where(p => priceRanges.Any(r => p.ProductPrice >= r.Min && p.ProductPrice <= r.Max)).ToList();
 			}
 			//You surpose to return a HTMl template when the request come!
-			return PartialView("_FilterPartialView", filteredProducts); //response khi người dùng gửi request lên server
+			return PartialView("_FilterPartialView", new ProductListViewModel()
+			{
+				Products = filteredProducts.Skip((int)((page - 1) * PageSize)).Take(PageSize),
+				PaingInfo = new PagingInfo()
+				{
+					ItemsPerPage = PageSize,
+					PageIndex = (int)page,
+					TotalItem = filteredProducts.Count(),
+				}
+
+			}); //response khi người dùng gửi request lên server
 		}
 
 
 
 
 		// Low-Price -> High-Price
-		public async Task<IActionResult> SortByHighPrice()
+		public async Task<IActionResult> SortByHighPrice(int? page = 1)
 		{
 			return PartialView("_SortedProductsPartial", new ProductListViewModel()
 			{
-				Products = _context.Products.OrderByDescending(prod => prod.ProductPrice),
+				Products = _context.Products.OrderByDescending(prod => prod.ProductPrice).Skip((int)((page - 1) * PageSize)).Take(PageSize),
 				PaingInfo = new PagingInfo()
 				{
 					ItemsPerPage = PageSize,
-					PageIndex = 1,
-					TotalItem = _context.Products.Count(),
+					PageIndex = (int)page,
+					TotalItem = _context.Products.OrderByDescending(prod => prod.ProductPrice).Count(),
 				}
 
 			});
 		}
 		// High-Price -> Low-Price
-		public async Task<IActionResult> SortByLowPrice()
+		public async Task<IActionResult> SortByLowPrice(int? page = 1)
 		{
 			return PartialView("_SortedProductsPartial", new ProductListViewModel()
 			{
-				Products = _context.Products.OrderBy(prod => prod.ProductPrice),
+				Products = _context.Products.OrderBy(prod => prod.ProductPrice).Skip((int)((page - 1) * PageSize)).Take(PageSize),
 				PaingInfo = new PagingInfo()
 				{
 					ItemsPerPage = PageSize,
-					PageIndex = 1,
-					TotalItem = _context.Products.Count(),
+					PageIndex = (int)page,
+					TotalItem = _context.Products.OrderBy(prod => prod.ProductPrice).Count(),
 				}
 
 			});
@@ -147,8 +157,8 @@ namespace FreshShopMaster.Controllers
 		// GET: Products/?page=1
 		public async Task<IActionResult> Index(int? page = 1)
 		{
-			if (page == 1)
-			{
+			
+			
 				return _context.Products != null ?
 						View("Index",
 						   new ProductListViewModel()
@@ -165,11 +175,12 @@ namespace FreshShopMaster.Controllers
 						   }
 
 							) :
-						  Problem("Entity set 'ApplicationDbContext.Products'  is null.");
-			}
-			else
-			{
-				return _context.Products != null ?
+						  Problem("Entity set 'ApplicationDbContext.Products'  is null.");	
+		}
+
+		public async Task<IActionResult> _PagingPartial(int? page = 1)
+		{
+			return _context.Products != null ?
 						PartialView("_PagingPartial",
 						   new ProductListViewModel()
 						   {
@@ -186,11 +197,7 @@ namespace FreshShopMaster.Controllers
 
 							) :
 						  Problem("Entity set 'ApplicationDbContext.Products'  is null.");
-			}
-
 		}
-
-
 
 
 
@@ -219,14 +226,14 @@ namespace FreshShopMaster.Controllers
 		public IActionResult Create()
 		{
 			//SelectList Item to pass to Create view
-            var categories = addCategoryType();
-            var productType = addProductType();
+			var categories = addCategoryType();
+			var productType = addProductType();
 
-            ViewBag.CategoriesId = categories;
-            ViewBag.ProductType = productType;
+			ViewBag.CategoriesId = categories;
+			ViewBag.ProductType = productType;
 
 
-            return View();
+			return View();
 		}
 
 		// POST: Products/Create
@@ -279,13 +286,13 @@ namespace FreshShopMaster.Controllers
 			{
 				return NotFound();
 			}
-            var categories = addProductType();
-            var productType = addProductType();
+			var categories = addProductType();
+			var productType = addProductType();
 
-            ViewBag.CategoriesId = categories;
-            ViewBag.ProductType = productType;
+			ViewBag.CategoriesId = categories;
+			ViewBag.ProductType = productType;
 
-            var product = await _context.Products.FindAsync(id);
+			var product = await _context.Products.FindAsync(id);
 			if (product == null)
 			{
 				return NotFound();
@@ -301,18 +308,18 @@ namespace FreshShopMaster.Controllers
 		public async Task<IActionResult> Edit(int id, [Bind("ProductId,ProductName,ProductDescription,ProductPrice,ProductDiscount,ProductType,OrderId,Photo")] Product product)
 		{
 
-            
-			
+
+
 			if (id != product.ProductId)
 			{
 				return NotFound();
 			}
-            if (ModelState.IsValid)
+			if (ModelState.IsValid)
 			{
-               
 
-			
-                try
+
+
+				try
 				{
 					string folder = "/images/";
 					string fileName = Path.GetFileNameWithoutExtension(product.Photo.FileName);
@@ -332,15 +339,15 @@ namespace FreshShopMaster.Controllers
 						throw;
 					}
 				}
-               
-                return RedirectToAction(nameof(Index));
-			}
-            var categories = addProductType();
-            var productType = addProductType();
 
-            ViewBag.CategoriesId = categories;
-            ViewBag.ProductType = productType;
-            return View(product);
+				return RedirectToAction(nameof(Index));
+			}
+			var categories = addProductType();
+			var productType = addProductType();
+
+			ViewBag.CategoriesId = categories;
+			ViewBag.ProductType = productType;
+			return View(product);
 		}
 
 		// GET: Products/Delete/5
@@ -391,34 +398,34 @@ namespace FreshShopMaster.Controllers
 
 		public List<SelectListItem> addProductType()
 		{
-            //SelectList Item to pass to Create view
-            var productType = new List<SelectListItem>();
+			//SelectList Item to pass to Create view
+			var productType = new List<SelectListItem>();
 
-            productType.Add(new SelectListItem()
-            {
-                Text = "best-seller",
-                Value = "best-seller"
-            });
-            productType.Add(new SelectListItem()
-            {
-                Text = "top-featured",
-                Value = "top-featured"
-            });
-            return productType;
-        }
+			productType.Add(new SelectListItem()
+			{
+				Text = "best-seller",
+				Value = "best-seller"
+			});
+			productType.Add(new SelectListItem()
+			{
+				Text = "top-featured",
+				Value = "top-featured"
+			});
+			return productType;
+		}
 		public List<SelectListItem> addCategoryType()
 		{
-            var categories = new List<SelectListItem>();
-            foreach (var item in _context.Categories)
-            {
-                categories.Add(new SelectListItem
-                {
-                    Text = item.CategoryName,
-                    Value = item.CategoryId.ToString()
-                });
-            }
+			var categories = new List<SelectListItem>();
+			foreach (var item in _context.Categories)
+			{
+				categories.Add(new SelectListItem
+				{
+					Text = item.CategoryName,
+					Value = item.CategoryId.ToString()
+				});
+			}
 			return categories;
-        }
+		}
 
 	}
 }
